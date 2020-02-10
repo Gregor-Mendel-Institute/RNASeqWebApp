@@ -8,10 +8,10 @@ import h5py
 import tables
 import numpy,math
 from datetime import datetime
-from JBrowseDataSource import DataSource as JBrowseDataSource 
+from JBrowseDataSource import DataSource as JBrowseDataSource
 import cherrypy
 import cPickle
-from rnaseq_records import RNASeqRecords 
+from rnaseq_records import RNASeqRecords
 from gviz_api import *
 from cherrypy.lib.static import serve_file
 
@@ -83,12 +83,12 @@ def SingleValueToJSPerf(value, value_type, escape_func=None):
 gviz_api.DataTable.SingleValueToJS =  SingleValueToJSPerf
 
 class RNASeqService:
-    base_path = "/net/gmi.oeaw.ac.at/gwasapp/rnaseq-web/"
+    base_path = "/srv/data/rnaseq-web/"
     base_path_jbrowse = base_path
     base_path_datasets = base_path + "datasets/"
     base_jbrowse_path = base_path_jbrowse + "jbrowse_1.2.1/"
     track_folder = "TAIR10"
-    
+
     #tracks/Chr%s/TAIR10/"
     __datasource = None
     _lazyArrayChunks = [{}, {}, {}, {}, {}]
@@ -96,7 +96,7 @@ class RNASeqService:
     genomeStats_hdf5_filename = base_path+ 'genestats.hdf5'
     gene_annot_file = base_path + "genome_annotation.pickled"
     phenotype_file = base_path + "phenotypes_fake.pickled"
-    
+
     def __init__(self):
         self.rnaseq_records = RNASeqRecords(self.hdf5_filename)
         self.accessions,self.accessions_ix = self.rnaseq_records.getAccessions()
@@ -111,8 +111,8 @@ class RNASeqService:
         self.genome_wide_stats =   [{'name':'genecount','label':'# Genes','isStackable':False,'isStepPlot':True}, \
                     {'name':'Dn'},{'name':'Ds'},{'name':'Pn'},{'name':'Ps'},{'name':'MK_test'}, \
                     {'name':'Pn/Ps'},{'name':'Dn/Ds'},{'name':'alpha'},{'name':'pesudo_tajima_d_s','label':'Tajima D (synonymous)'},{'name':'pesudo_tajima_d_ns','label':'Tajima D (non-synonymous)'}]
-            
-    
+
+
     def _getLocationDistribution(self):
         import bisect, itertools
         from operator import itemgetter
@@ -121,7 +121,7 @@ class RNASeqService:
         for country, rows in itertools.groupby(sorted(self.accessions, key=itemgetter('country')), selector):
             locations[country] = len(list(rows))
         return locations
-    
+
     def getLocationDistributionData(self):
         location_dist = self._getLocationDistribution()
         data = []
@@ -133,15 +133,15 @@ class RNASeqService:
         data_table = gviz_api.DataTable(dict(column_name_type_ls))
         data_table.LoadData(data)
         return data_table.ToJSon(columns_order=column_ls)
-    
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getTopResults(self,environ_type,result_type,range_start=0,range_length=1000, gene='',snp_chr='',snp_pos ='',gene_chr = '',min_score=''):
         results, count,range_start = self.rnaseq_records.getTopResults(environ_type,result_type,int(range_start), int(range_length), gene, snp_chr,snp_pos,gene_chr,min_score)
         return {'results':results, 'count':count, 'start':int(range_start),'length':int(range_length)}
-    
-    
-    
+
+
+
     @cherrypy.expose
     @cherrypy.tools.response_headers(headers=[('Content-Type','application/csv')])
     def downloadAssociationData(self,phenotype,environment,dataset=None,transformation=None,result=None):
@@ -159,8 +159,8 @@ class RNASeqService:
         content = tempfile.getvalue()
         tempfile.close()
         return content;
-    
-    
+
+
     """"""
     @cherrypy.expose
     def downloadTopResults(self,environ_type,result_type, gene='',snp_chr='',snp_pos ='',gene_chr = '',min_score=''):
@@ -171,15 +171,15 @@ class RNASeqService:
         else:
             path = self.base_path+"/%s.csv" %filename
         return serve_file(path, "application/csv", "attachment")
-    
+
     def _getPhenotypes(self, range_start,range_length,name='', chr='', start='', end=''):
         return self.rnaseq_records.getPhenotypes(range_start, range_length, name, chr, start, end)
-        
+
         """ OLD IMPLEMENTATION
         phenotypes_to_filter = []
         phenotypes_to_return = []
         stop = int(range_start)+int(range_length)
-       
+
         isCriteria = False
         if (name != '') or (chr !='') or (start != '') or (end != ''):
             isCriteria = True
@@ -193,7 +193,7 @@ class RNASeqService:
                     (chr =='' or int(chr) == phenotype['chr']) and (start == '' or int(start) <= phenotype['start']) and \
                     (end == '' or int(end) >= phenotype['end']):
                     phenotypes_to_filter.append(phenotype)
-        
+
         count = len(phenotypes_to_filter)
         if stop > count:
             range_start = range_start - stop
@@ -204,7 +204,7 @@ class RNASeqService:
             phenotypes_to_return.append(phenotypes_to_filter[i])
         return phenotypes_to_return,count,range_start
         """
-        
+
     def _getHistogramDataTable(self,phenotype,environment,dataset='Fullset',transformation='raw'):
         column_name_type_ls = [("x_axis", ("string","Phenotype Value")), \
                             ("frequency",("number", "Frequency"))]
@@ -213,7 +213,7 @@ class RNASeqService:
         data_table.LoadData(self.rnaseq_records.get_phenotype_bins(phenotype,environment,dataset,transformation))
         column_ls = [row[0] for row in column_name_type_ls]
         return data_table.ToJSon(columns_order=column_ls)
-    
+
     def _getCombinedHistogramDataTable(self,phenotype,dataset='Fullset',transformation='raw'):
         column_name_type_ls = [("x_axis", ("string","Phenotype Value")), \
                             ("frequency",("number", "10 C ")),
@@ -223,7 +223,7 @@ class RNASeqService:
         data_table.LoadData(self.rnaseq_records.get_phenotype_bins(phenotype,'both',dataset,transformation))
         column_ls = [row[0] for row in column_name_type_ls]
         return data_table.ToJSon(columns_order=column_ls)
-    
+
     def _getPhenotypeExplorerData(self,phenotype,environment,dataset,transformation,phen_vals = None):
         import datetime
         result = {}
@@ -247,7 +247,7 @@ class RNASeqService:
         column_ls = [row[0] for row in column_name_type_ls]
         result= data_table.ToJSon(columns_order=column_ls)
         return result
-    
+
     def _getGeneCountHistogramData(self,chr):
         if self.__datasource == None:
             self.__datasource = JBrowseDataSource(self.base_jbrowse_path,self.track_folder)
@@ -256,11 +256,11 @@ class RNASeqService:
         maxValue = max(histogramData)
         positions = [i*bpPerBin for i in range(0,binCount+1)]
         return zip(positions,histogramData)
-    
+
     @cherrypy.expose
     def getAccessions(self):
         return {'accessions':self.accessions}
-    
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getPhenotypes(self, range_start=0, range_length=1000, name='', chr='', start='', end=''):
@@ -281,14 +281,14 @@ class RNASeqService:
         phenotype['maxScore10C'] = phenotype_info['maxScore10C']
         phenotype['maxScore16C'] = phenotype_info['maxScore16C']
         phenotype['maxScoreFull'] = phenotype_info['maxScoreFull']
-        
+
         phenotype['pseudoHeritability10C'] = phenotype_info['pseudoHeritability10C']
         phenotype['pseudoHeritability16C'] = phenotype_info['pseudoHeritability16C']
 
         retval['phenotype'] = phenotype;
         retval['histogramdataTable'] = self._getCombinedHistogramDataTable(id)
         return retval
-    
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getPhenotypeMotionChartData(self,phenotype,environment,dataset,transformation):
@@ -317,7 +317,7 @@ class RNASeqService:
                     data = zip(association_result[i]['position'].tolist(),association_result[i]['score'].tolist())
                 data_table = gviz_api.DataTable(description)
                 data_table.LoadData(data)
-                chr2data[i] =  data_table.ToJSon() 
+                chr2data[i] =  data_table.ToJSon()
             retval['chr2data'] = chr2data
             retval['chr2length'] = association_result['chromosome_ends']
             retval['max_value'] = association_result['max_score']
@@ -328,8 +328,8 @@ class RNASeqService:
         except Exception, err:
             retval ={"status":"ERROR","statustext":"%s"%str(err)}
         return retval
-    
-    
+
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getGWASData(self,phenotype,environment,dataset,transformation,result):
@@ -337,7 +337,7 @@ class RNASeqService:
             import math
             retval = {}
             association_result = self.rnaseq_records.get_results_by_chromosome(phenotype,environment,dataset,transformation,result)
-            
+
             description = [('position',"number", "Position"),('value','number','-log Pvalue')]
             chr2data ={}
             for i in range(1,6):
@@ -345,7 +345,7 @@ class RNASeqService:
                 data.sort()
                 data_table = gviz_api.DataTable(description)
                 data_table.LoadData(data)
-                chr2data[i] =  data_table.ToJSon(columns_order=("position", "value")) 
+                chr2data[i] =  data_table.ToJSon(columns_order=("position", "value"))
             retval['chr2data'] = chr2data
             retval['chr2length'] = association_result['chromosome_ends']
             retval['max_value'] = association_result['max_score']
@@ -369,7 +369,7 @@ class RNASeqService:
         except Exception,err:
             retval =  {"status":"ERROR","statustext":"%s" %str(err)}
         return retval
-    
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getGeneFromName(self,query):
@@ -382,7 +382,7 @@ class RNASeqService:
         except Exception,err:
             retval =  {"status":"ERROR","statustext":"%s" %str(err)}
         return retval
-    
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getGenesFromQuery(self,query):
@@ -412,7 +412,7 @@ class RNASeqService:
         except Exception,err:
             retval =  {"status":"ERROR","statustext":"%s" %str(err)}
         return retval
-    
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getGenomeStatsList(self):
@@ -421,7 +421,7 @@ class RNASeqService:
         except Exception,err:
             retval =  {"status":"ERROR","statustext":"%s" %str(err)}
         return retval
-    
+
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def getGenomeStatsData(self,stats,chr):
@@ -444,7 +444,7 @@ class RNASeqService:
                 chr_region = group.attrs['chr_regions'][chr_num]
                 stats_values = group['stats'][chr_region[0]:chr_region[1],stats_ix]
                 positions = group['positions'][chr_region[0]:chr_region[1],1]
-                
+
                 for stat in stats:
                     stat_label = stat
                     stat_data = next((genome_stat for genome_stat in self.genome_wide_stats if genome_stat['name'] == stat), None)

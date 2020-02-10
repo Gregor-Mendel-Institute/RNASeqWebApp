@@ -1,3 +1,6 @@
-/gwt-unitCache
-/target
+/.google_apis
 /.gwt
+/.settings
+target/.generated
+*.iml
+target/gwt-unitCache/
