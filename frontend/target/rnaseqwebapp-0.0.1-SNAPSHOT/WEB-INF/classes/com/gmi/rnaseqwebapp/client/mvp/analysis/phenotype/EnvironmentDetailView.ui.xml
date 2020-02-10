@@ -1,0 +1,42 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:gviz='urn:import:com.google.gwt.visualization.client.visualizations'
+	xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys='com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator'
+	ui:generateLocales='default'>
+	
+	<ui:with field="mainRes" type="com.gmi.rnaseqwebapp.client.resources.MyResources" />
+    <ui:style>
+    	.container {
+			margin:6px;
+
+		}
+	</ui:style>	
+	<g:ScrollPanel>
+		<g:LayoutPanel>
+		<g:layer top="0px" height="420px">
+			<g:HTMLPanel height="400px" addStyleNames="{style.container} {mainRes.style.box_shadow}">
+				<div class="">
+					<g:ResizeLayoutPanel ui:field="phenotype_container" height="400px"/>
+				</div>
+			</g:HTMLPanel>
+		</g:layer>
+		<g:layer top="430px" height="520px">
+			<g:LayoutPanel ui:field="cvt_container">
+					
+			</g:LayoutPanel>
+		</g:layer>
+		<g:layer top="960px" height="620px">
+			<g:HTMLPanel height="600px" addStyleNames="{style.container} {mainRes.style.box_shadow}">
+				<div class="">
+					<g:ResizeLayoutPanel ui:field="motionChart_container" height="600px">
+					</g:ResizeLayoutPanel>
+				</div>
+			</g:HTMLPanel>
+		</g:layer>
+		</g:LayoutPanel>
+	</g:ScrollPanel>
+</ui:UiBinder>

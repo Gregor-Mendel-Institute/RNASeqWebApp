@@ -1,0 +1,72 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys='com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator'
+	ui:generateLocales='default'>
+	
+
+	<ui:with field="mainRes" type="com.gmi.rnaseqwebapp.client.resources.MyResources" /> 
+	<ui:image field="search_white" src="../../../resources/search_white.png" />
+	<ui:style>
+		
+
+		.content_container {
+		    border-color: #D0D0D0;
+		    border-style: solid;
+		    border-width: 1px;
+		}
+		.seach_container {
+			margin:8px 8px 8px 6px;
+		}
+		
+        @sprite .search_box {
+			gwt-image:'search_white';
+			background-position:5px 5px;
+			background-color:white;
+			padding:5px 0 5px 25px;
+		}
+	</ui:style>
+
+	<g:DockLayoutPanel>
+		<g:west size="150.0">
+			<g:HTMLPanel addStyleNames="{mainRes.style.tree_container} {mainRes.style.nav_container}">
+				<div class="{style.seach_container}">
+					<g:SuggestBox ui:field="search_phenotypes" addStyleNames="{style.search_box}" width="110px" />
+				</div>
+				<div class="{mainRes.style.tree_header}"><span>Environment</span>
+				</div>
+				<div>
+					<ul class="{mainRes.style.nav_list}">
+						<li class="{mainRes.style.nav_item}" >
+							<g:InlineHyperlink ui:field="environmentOverviewLink" text="Overview"  addStyleNames="{mainRes.style.nav_item_selected}"/>
+						</li>
+					</ul>
+					
+				</div>
+				<div class="{mainRes.style.tree_header}"><span>Results</span>
+				</div>
+				<div>
+					<ul class="{mainRes.style.nav_list}">
+					<li class="{mainRes.style.nav_item}"  >
+						<g:InlineHyperlink ui:field="KWlink" text="KW"/>
+					</li>
+					<li class="{mainRes.style.nav_item}" >
+						<g:InlineHyperlink ui:field="LMlink" text="LM" />
+					</li>
+					<li class="{mainRes.style.nav_item}">
+						<g:InlineHyperlink ui:field="EXlink" text="EMMAX" />
+					</li>
+					</ul>
+				</div>
+				<div class="{mainRes.style.tree_header}"><span>Step-Wise</span>
+				</div>
+				<g:HTMLPanel ui:field="step_wise_container" />
+			</g:HTMLPanel>
+		</g:west>
+		<g:center>
+			<g:SimpleLayoutPanel ui:field="container" addStyleNames="{mainRes.style.content_container}" />
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder>

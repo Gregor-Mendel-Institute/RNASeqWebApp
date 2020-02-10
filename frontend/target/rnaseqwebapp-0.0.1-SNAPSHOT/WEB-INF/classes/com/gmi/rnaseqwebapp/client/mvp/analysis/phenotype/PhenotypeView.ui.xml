@@ -1,0 +1,79 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:gwas='urn:import:com.gmi.rnaseqwebapp.client.ui'
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys='com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator'
+	ui:generateLocales='default'>
+
+	<ui:with field="mainRes" type="com.gmi.rnaseqwebapp.client.resources.MyResources" />
+
+	<ui:style>
+	
+	    .header_row {
+			padding: 7px 5px;
+			border-bottom:2px solid  #666;
+			color:#333;
+		}
+		.header_title {
+			font-weight:bold;
+		}
+		.header_info {
+			float:right;
+
+		}
+		.menu {
+			list-style: none;
+			display:inline;
+			padding:7px 5px;
+	    }
+	    .menu2 {
+	        margin-left: 100px;
+	    }
+	    .menu li {
+			display:inline;
+			color:#5793BD;
+			cursor:pointer;
+			padding:7px 5px;
+		}
+		
+	</ui:style>
+	<g:DockLayoutPanel unit="EM">
+		<g:north size="2.3">
+			<g:HTMLPanel addStyleNames="{style.header_row}">
+				<div>
+						<g:InlineLabel ui:field="phenotype_name" addStyleNames="{style.header_title}"/>
+						<ul class="{style.menu}">
+						<li class="{mainRes.style.indicator_small_icon}" ui:field="overview_item">
+						 <g:InlineHyperlink ui:field="overviewLink">Overview</g:InlineHyperlink> 
+						</li>
+						<li ui:field="t16_item">
+							<g:InlineHyperlink ui:field="T16Link"  >16°C</g:InlineHyperlink> 
+						</li>
+						<li ui:field="t10_item">
+							<g:InlineHyperlink ui:field="T10Link" >10°C</g:InlineHyperlink> 
+						</li>
+						<li ui:field="gxe_item">
+							<g:InlineHyperlink ui:field="GxELink" >GxE</g:InlineHyperlink> 
+						</li>
+						</ul>
+						<ul class="{style.menu} {style.menu2}" ui:field="sub_menu">
+						<li class="{mainRes.style.indicator_small_icon}" ui:field="mRNA_item">
+						 <g:InlineHyperlink ui:field="mRNALink">mRNA</g:InlineHyperlink> 
+						</li>
+						<li ui:field="bisulfite_item">
+							<g:InlineHyperlink ui:field="bisulfiteLink">bisulfite</g:InlineHyperlink> 
+						</li>
+						</ul>
+   					    <g:InlineLabel ui:field="phenotype_info" addStyleNames="{style.header_info}"/>
+					</div>
+
+			</g:HTMLPanel>
+		</g:north>
+		<g:center>
+			<gwas:SlidingPanel ui:field="container">
+			</gwas:SlidingPanel>
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder>

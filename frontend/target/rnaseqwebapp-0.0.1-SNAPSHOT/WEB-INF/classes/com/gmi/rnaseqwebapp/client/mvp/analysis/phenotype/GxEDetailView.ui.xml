@@ -1,0 +1,60 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	ui:generateFormat='com.google.gwt.i18n.rebind.format.PropertiesFormat'
+	ui:generateKeys='com.google.gwt.i18n.rebind.keygen.MD5KeyGenerator'
+	ui:generateLocales='default'>
+
+	<ui:with field="mainRes" type="com.gmi.rnaseqwebapp.client.resources.MyResources" /> 
+	<ui:image field="search_white" src="../../../resources/search_white.png" />
+	<ui:style>
+
+		.content_container {
+		    border-color: #D0D0D0;
+		    border-style: solid;
+		    border-width: 1px;
+		}
+		.seach_container {
+			margin:8px 8px 8px 6px;
+		}
+		
+        @sprite .search_box {
+			gwt-image:'search_white';
+			background-position:5px 5px;
+			background-color:white;
+			padding:5px 0 5px 25px;
+		}
+	</ui:style>
+
+	<g:DockLayoutPanel>
+		<g:west size="150.0">
+			<g:HTMLPanel addStyleNames="{mainRes.style.tree_container} {mainRes.style.nav_container}">
+				<div class="{style.seach_container}">
+					<g:SuggestBox ui:field="search_phenotypes" addStyleNames="{style.search_box}" width="110px" />
+				</div>
+				<div class="{mainRes.style.tree_header}"><span>Models</span>
+				</div>
+				<div>
+					<ul class="{mainRes.style.nav_list}">
+					<li class="{mainRes.style.nav_item}"  >
+						<g:InlineHyperlink ui:field="combinedLink" text="Combined"/>
+					</li>
+					<li class="{mainRes.style.nav_item}" >
+						<g:InlineHyperlink ui:field="fullLink" text="Full model" />
+					</li>
+					<li class="{mainRes.style.nav_item}">
+						<g:InlineHyperlink ui:field="geneticLink" text="Common effect" />
+					</li>
+					<li class="{mainRes.style.nav_item}">
+						<g:InlineHyperlink ui:field="environLink" text="Interaction effect" />
+					</li>
+					</ul>
+				</div>
+			</g:HTMLPanel>
+		</g:west>
+		<g:center>
+			<g:SimpleLayoutPanel ui:field="container" addStyleNames="{mainRes.style.content_container}" />
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder>
